@@ -13,6 +13,8 @@ October, 2014
 
    * - Date
      - Change
+   * - 10/22/14
+     - Fixed a bug in the :ref:`Text Input Problem XML`.
    * - 10/17/14
      - Provided more explanation to the introduction to :ref:`Problems and
        Tools`.

@@ -13,6 +13,8 @@ October, 2014
 
    * - Date
      - Change
+   * - 10/22/14
+     - Fixed a bug in :ref:`Text Input Problem XML`.
    * - 10/16/14
      - Updated :ref:`Set Important Dates for Your Course` to reflect change
        that course dates now use UTC.
