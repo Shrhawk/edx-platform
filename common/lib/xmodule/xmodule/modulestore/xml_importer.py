@@ -706,10 +706,9 @@ def create_xml_attributes(module, xml):
 
 def module_has_parent_pointer(module):
     """
-    Does the module have a parent pointer
+    Checks if a module has a parent pointer. This is only the case for
+    a draft module.
     """
-    if module.location.block_type in DIRECT_ONLY_CATEGORIES:
-        return False
     if hasattr(module, 'xml_attributes'):
         return 'parent_url' in module.xml_attributes or 'parent_sequential_url' in module.xml_attributes
     return False

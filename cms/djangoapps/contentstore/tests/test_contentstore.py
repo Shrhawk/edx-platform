@@ -258,10 +258,6 @@ class ImportRequiredTestCases(ContentStoreTestCase):
         self.assertIn(self.DRAFT_HTML + ".xml", draft_dir.listdir('html'))
         self.assertIn(self.DRAFT_VIDEO + ".xml", draft_dir.listdir('video'))
 
-
-        self.assertGreater(len(draft_dir.listdir('html')), 0)
-        self.assertGreater(len(draft_dir.listdir('video')), 0)
-
         # check for grading_policy.json
         filesystem = OSFS(root_dir / 'test_export/policies/2012_Fall')
         self.assertTrue(filesystem.exists('grading_policy.json'))
