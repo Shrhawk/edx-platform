@@ -610,7 +610,7 @@ def _import_course_draft(
                 except Exception:  # pylint: disable=W0703
                     logging.exception('Error while parsing course xml.')
 
-    # sort drafts
+    # sort drafts by `index_in_children_list` attribute
     drafts.sort(key=lambda x: x.index)
 
     for draft in get_roots_from_node_list(drafts):
