@@ -76,15 +76,22 @@ def rewrite_nonportable_content_links(source_course_id, dest_course_id, text):
 
 
 def module_node_contructor(module, url, parent_url, location=None, parent_location=None, index=None):
-    """Contructs a module_node namedtuple with defaults"""
+    """
+    Contructs a module_node namedtuple with defaults.
+    """
     module_node = namedtuple('module_node', ['module', 'location', 'url', 'parent_location', 'parent_url', 'index'])
     return module_node(module, location, url, parent_location, parent_url, index)
 
 
-def get_subtree_roots(module_nodes, use_locations=False):
+def get_roots_from_node_list(module_nodes, use_locations=False):
     """
-    Takes a list of module_nodes and returns the roots of any trees represented
-    by the list
+    Takes a list of module_nodes, which are namedtuples that have identifiers
+    for themselves and for their parent. A list of module_nodes, therefore,
+    may describe one or several trees. For a given list of module_nodes,
+    this generator yields the root of every such tree described by that list.
+
+    `use_locations` is a kwarg that specifies if the module_nodes provided
+    have a non-None `parent_location` attribute.
     """
     urls = [module_node.url for module_node in module_nodes]
 

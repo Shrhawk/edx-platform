@@ -215,18 +215,25 @@ class CourseTestCase(ModuleStoreTestCase):
             self.assertEqual(self.store.has_published_version(item), publish_state)
 
         def get_and_verify_publish_state(item_type, item_name, publish_state):
-            """Gets the given item from the store and verifies the publish state of the item is as expected."""
+            """
+            Gets the given item from the store and verifies the publish state
+            of the item is as expected.
+            """
             item = self.store.get_item(course_id.make_usage_key(item_type, item_name))
             verify_item_publish_state(item, publish_state)
             return item
 
-        # verify that the draft vertical is draft
+        # verify draft vertical has a published version with published children
         vertical = get_and_verify_publish_state('vertical', self.TEST_VERTICAL, True)
         for child in vertical.get_children():
             verify_item_publish_state(child, True)
 
-        # make sure that we don't have a sequential that is not in draft mode
+        # verify that it has a draft too
+        self.assertTrue(getattr(vertical, "is_draft", False))
+
+        # make sure that we don't have a sequential that is in draft mode
         sequential = get_and_verify_publish_state('sequential', self.SEQUENTIAL, True)
+        self.assertFalse(getattr(sequential, "is_draft", False))
 
         # verify that we have the private vertical
         private_vertical = get_and_verify_publish_state('vertical', self.PRIVATE_VERTICAL, False)

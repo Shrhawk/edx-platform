@@ -43,7 +43,7 @@ from xmodule.modulestore.exceptions import DuplicateCourseError
 from xmodule.modulestore.mongo.base import MongoRevisionKey
 from xmodule.modulestore import ModuleStoreEnum
 from xmodule.modulestore.draft_and_published import DIRECT_ONLY_CATEGORIES
-from xmodule.modulestore.store_utilities import module_node_contructor, get_subtree_roots
+from xmodule.modulestore.store_utilities import module_node_contructor, get_roots_from_node_list
 
 
 log = logging.getLogger(__name__)
@@ -613,7 +613,7 @@ def _import_course_draft(
     # sort drafts
     drafts.sort(key=lambda x: x.index)
 
-    for draft in get_subtree_roots(drafts):
+    for draft in get_roots_from_node_list(drafts):
         try:
             _import_module(draft.module)
         except Exception:  # pylint: disable=W0703

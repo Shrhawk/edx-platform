@@ -3,10 +3,10 @@ Tests for store_utilities.py
 """
 import unittest
 from mock import Mock
-from ddt import ddt, data, unpack
+import ddt
 
 from xmodule.modulestore.store_utilities import (
-    get_subtree_roots, module_node_contructor
+    get_roots_from_node_list, module_node_contructor
 )
 
 
@@ -20,7 +20,7 @@ def mock_location(category):
     return mock_parent_location
 
 
-@ddt
+@ddt.ddt
 class TestUtils(unittest.TestCase):
     """Tests for store_utilities"""
 
@@ -37,7 +37,7 @@ class TestUtils(unittest.TestCase):
 
         # NOTE: it is not actually possible for sequentials to be drafts
         # However, in this test we add a sequential to the draft tree in order
-        # to check that, when using locations, get_subtree_roots automatically
+        # to check that, when using locations, get_roots_from_node_list automatically
         # yields any node whose parent is a sequential.
         module_node_contructor(Mock(), 'url_grandparent', 'url_great_grandparent', parent_location=mock_location('chapter')),
 
@@ -51,16 +51,16 @@ class TestUtils(unittest.TestCase):
     # when using locations, we should also yield url_parent_1, whose parent is a sequential node
     SUBTREES_ROOTS_URLS_WITH_LOCATIONS = ['url_parent_1', 'url_grandparent', 'url_grandparent_2']
 
-    @data(
+    @ddt.data(
         (ONLY_ROOTS, ONLY_ROOTS_URLS, False),
         (ONLY_ROOTS, ONLY_ROOTS_URLS, True),
         (SUBTREES, SUBTREES_ROOTS_URLS_WITHOUT_LOCATIONS, False),
         (SUBTREES, SUBTREES_ROOTS_URLS_WITH_LOCATIONS, True),
     )
-    @unpack
-    def test_get_subtree_roots(self, module_nodes, expected_roots_urls, use_locations):
-        """tests for get_subtree_roots"""
-        subtree_roots_urls = [root.url for root in get_subtree_roots(module_nodes, use_locations)]
+    @ddt.unpack
+    def test_get_roots_from_node_list(self, module_nodes, expected_roots_urls, use_locations):
+        """tests for get_roots_from_node_list"""
+        subtree_roots_urls = [root.url for root in get_roots_from_node_list(module_nodes, use_locations)]
         # make sure each root url is distinct
         self.assertEqual(len(subtree_roots_urls), len(set(subtree_roots_urls)))
         # make sure each expected url is distinct
