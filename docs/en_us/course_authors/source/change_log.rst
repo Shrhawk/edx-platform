@@ -13,6 +13,9 @@ October, 2014
 
    * - Date
      - Change
+   * - 10/23/14
+     - Fixed the code sample in :ref:`Script Tag Format` in the :ref:`Write
+       Your Own Grader` chapter.
    * - 10/16/14
      - Updated :ref:`Set Important Dates for Your Course` to reflect change
        that course dates now use UTC.
