@@ -42,7 +42,7 @@ from xmodule.modulestore.django import ASSET_IGNORE_REGEX
 from xmodule.modulestore.exceptions import DuplicateCourseError
 from xmodule.modulestore.mongo.base import MongoRevisionKey
 from xmodule.modulestore import ModuleStoreEnum
-from xmodule.modulestore.store_utilities import module_node_contructor, get_roots_from_node_list
+from xmodule.modulestore.store_utilities import draft_node_constructor, get_subtree_roots_from_draft_nodes
 
 
 log = logging.getLogger(__name__)
@@ -598,7 +598,7 @@ def _import_course_draft(
                         parent_url = get_parent_url(descriptor, xml)
                         draft_url = descriptor.location.to_deprecated_string()
 
-                        draft = module_node_contructor(
+                        draft = draft_node_constructor(
                             module=descriptor, url=draft_url, parent_url=parent_url, index=index
                         )
 
@@ -610,7 +610,7 @@ def _import_course_draft(
     # sort drafts by `index_in_children_list` attribute
     drafts.sort(key=lambda x: x.index)
 
-    for draft in get_roots_from_node_list(drafts):
+    for draft in get_subtree_roots_from_draft_nodes(drafts):
         try:
             _import_module(draft.module)
         except Exception:  # pylint: disable=W0703

@@ -75,32 +75,37 @@ def rewrite_nonportable_content_links(source_course_id, dest_course_id, text):
     return text
 
 
-def module_node_contructor(module, url, parent_url, location=None, parent_location=None, index=None):
+def draft_node_constructor(module, url, parent_url, location=None, parent_location=None, index=None):
     """
-    Contructs a module_node namedtuple with defaults.
+    Contructs a draft_node namedtuple with defaults.
     """
-    module_node = namedtuple('module_node', ['module', 'location', 'url', 'parent_location', 'parent_url', 'index'])
-    return module_node(module, location, url, parent_location, parent_url, index)
+    draft_node = namedtuple('draft_node', ['module', 'location', 'url', 'parent_location', 'parent_url', 'index'])
+    return draft_node(module, location, url, parent_location, parent_url, index)
 
 
-def get_roots_from_node_list(module_nodes, use_locations=False):
+def get_subtree_roots_from_draft_nodes(draft_nodes, use_locations=False):
     """
-    Takes a list of module_nodes, which are namedtuples that have identifiers
-    for themselves and for their parent. A list of module_nodes, therefore,
-    may describe one or several trees. For a given list of module_nodes,
-    this generator yields the root of every such tree described by that list.
+    Takes a list of draft_nodes, which are namedtuples with identifiers
+    for themselves and for their parent.
 
-    `use_locations` is a kwarg that specifies if the module_nodes provided
+    If a draft_node is in `draft_nodes`, then we expect for all its children
+    should be in `draft_nodes` as well. Since `_import_draft` is recursive,
+    we only want to import the roots of any draft subtrees contained in
+    `draft_nodes`.
+
+    This generator yields those roots.
+
+    `use_locations` is a kwarg that specifies if the draft_nodes provided
     have a non-None `parent_location` attribute.
     """
-    urls = [module_node.url for module_node in module_nodes]
+    urls = [draft_node.url for draft_node in draft_nodes]
 
-    for module_node in module_nodes:
+    for draft_node in draft_nodes:
         # assume that parents can be draft
         parent_cannot_be_draft = False
         if use_locations:
             # unless we have access to parent locations
-            parent_cannot_be_draft = module_node.parent_location.category in DIRECT_ONLY_CATEGORIES
+            parent_cannot_be_draft = draft_node.parent_location.category in DIRECT_ONLY_CATEGORIES
 
-        if parent_cannot_be_draft or module_node.parent_url not in urls:
-            yield module_node
+        if parent_cannot_be_draft or draft_node.parent_url not in urls:
+            yield draft_node

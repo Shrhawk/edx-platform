@@ -9,7 +9,7 @@ from xmodule.contentstore.content import StaticContent
 from xmodule.exceptions import NotFoundError
 from xmodule.modulestore import EdxJSONEncoder, ModuleStoreEnum
 from xmodule.modulestore.inheritance import own_metadata
-from xmodule.modulestore.store_utilities import module_node_contructor, get_roots_from_node_list
+from xmodule.modulestore.store_utilities import draft_node_constructor, get_subtree_roots_from_draft_nodes
 from fs.osfs import OSFS
 from json import dumps
 import json
@@ -134,7 +134,7 @@ def export_to_xml(modulestore, contentstore, course_key, root_dir, course_dir):
                         # Don't try to export orphaned items.
                         if parent_loc is not None:
                             logging.debug('parent_loc = {0}'.format(parent_loc))
-                            draft_node = module_node_contructor(
+                            draft_node = draft_node_constructor(
                                 draft_module,
                                 location=draft_module.location,
                                 url=draft_module.location.to_deprecated_string(),
@@ -144,7 +144,7 @@ def export_to_xml(modulestore, contentstore, course_key, root_dir, course_dir):
 
                             draft_node_list.append(draft_node)
 
-                    for draft_node in get_roots_from_node_list(draft_node_list, use_locations=True):
+                    for draft_node in get_subtree_roots_from_draft_nodes(draft_node_list, use_locations=True):
                         # only export the roots of the draft subtrees
                         # since export_from_xml (called by `add_xml_to_node`)
                         # exports a whole tree
