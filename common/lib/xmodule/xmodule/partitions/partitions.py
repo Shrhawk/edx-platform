@@ -57,21 +57,25 @@ class Group(namedtuple("Group", "id name")):
         return Group(value["id"], value["name"])
 
 
-class UserPartition(namedtuple("UserPartition", "id name description groups")):
+class UserPartition(namedtuple("UserPartition", "id name type description groups")):
     """
     A named way to partition users into groups, primarily intended for running
     experiments.  It is expected that each user will be in at most one group in a
     partition.
 
-    A Partition has an id, name, description, and a list of groups.
+    A Partition has an id, name, type, description, and a list of groups.
     The id is intended to be unique within the context where these are used. (e.g. for
-    partitions of users within a course, the ids should be unique per-course)
+    partitions of users within a course, the ids should be unique per-course).
+    The type is used to indicate the behavior of the user partition. Initially there
+    are two types:
+      "random" - an equally distributed randomized partition.
+      "cohorted" - a partition where a user is assigned to a group by their cohort.
     """
-    VERSION = 1
+    VERSION = 2
 
-    def __new__(cls, id, name, description, groups):
+    def __new__(cls, id, name, type, description, groups):
         # pylint: disable=super-on-old-class
-        return super(UserPartition, cls).__new__(cls, int(id), name, description, groups)
+        return super(UserPartition, cls).__new__(cls, int(id), name, type, description, groups)
 
     def to_json(self):
         """
@@ -84,6 +88,7 @@ class UserPartition(namedtuple("UserPartition", "id name description groups")):
         return {
             "id": self.id,
             "name": self.name,
+            "type": self.type,
             "description": self.description,
             "groups": [g.to_json() for g in self.groups],
             "version": UserPartition.VERSION
@@ -107,15 +112,20 @@ class UserPartition(namedtuple("UserPartition", "id name description groups")):
                 raise TypeError("UserPartition dict {0} missing value key '{1}'"
                                 .format(value, key))
 
-        if value["version"] != UserPartition.VERSION:
+        if value["version"] == 1:
+            type = "random"    # type was only introduced in version 2
+        elif value["version"] != UserPartition.VERSION:
             raise TypeError("UserPartition dict {0} has unexpected version"
                             .format(value))
+        else:
+            type = value["type"]
 
         groups = [Group.from_json(g) for g in value["groups"]]
 
         return UserPartition(
             value["id"],
             value["name"],
+            type,
             value["description"],
             groups
         )

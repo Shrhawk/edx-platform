@@ -100,6 +100,18 @@ class PartitionService(object):
         if group_id is not None and group_id in partition_group_ids:
             return group_id
 
+        # If a group has not been assigned then do so based upon the user partition's type.
+        if user_partition.type == 'random':
+            return self._assign_random_group(user_partition)
+        elif user_partition.type == 'cohorted':
+            return self._get_group_from_cohort(user_partition)
+        else:
+            return None
+
+    def _assign_random_group(self, user_partition):
+        """
+        Assigns the current user to a random group in the specified user partition.
+        """
         # TODO: what's the atomicity of the get above and the save here?  If it's not in a
         # single transaction, we could get a situation where the user sees one state in one
         # thread, but then that decision gets overwritten--low probability, but still bad.
@@ -120,6 +132,8 @@ class PartitionService(object):
 
         # See note above for explanation of local_random()
         group = self.random.choice(user_partition.groups)
+        key = self._key_for_partition(user_partition)
+        scope = self._user_tags_service.COURSE_SCOPE
         self._user_tags_service.set_tag(scope, key, group.id)
 
         # emit event for analytics
@@ -136,3 +150,10 @@ class PartitionService(object):
         self._track_function('xmodule.partitions.assigned_user_to_partition', event_info)
 
         return group.id
+
+    def _get_group_from_cohort(self, user_partition):
+        """
+        Returns the group for the current user based upon their cohort.
+        """
+        # TODO: implement this sucker!
+        return None

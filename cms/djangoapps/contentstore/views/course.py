@@ -1222,6 +1222,7 @@ class GroupConfiguration(object):
         return UserPartition(
             self.configuration["id"],
             self.configuration["name"],
+            self.configuration["type"],
             self.configuration["description"],
             groups
         )
@@ -1336,7 +1337,6 @@ def group_configurations_list_handler(request, course_key_string):
         if 'text/html' in request.META.get('HTTP_ACCEPT', 'text/html'):
             group_configuration_url = reverse_course_url('group_configurations_list_handler', course_key)
             course_outline_url = reverse_course_url('course_handler', course_key)
-            split_test_enabled = SPLIT_TEST_COMPONENT_TYPE in ADVANCED_COMPONENT_TYPES and SPLIT_TEST_COMPONENT_TYPE in course.advanced_modules
 
             configurations = GroupConfiguration.add_usage_info(course, store)
 
@@ -1344,7 +1344,7 @@ def group_configurations_list_handler(request, course_key_string):
                 'context_course': course,
                 'group_configuration_url': group_configuration_url,
                 'course_outline_url': course_outline_url,
-                'configurations': configurations if split_test_enabled else None,
+                'configurations': configurations,
             })
         elif "application/json" in request.META.get('HTTP_ACCEPT'):
             if request.method == 'POST':
