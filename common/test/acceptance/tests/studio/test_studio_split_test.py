@@ -80,7 +80,13 @@ class SplitTest(ContainerBase, SplitTestMixin):
         self.course_fixture._update_xblock(self.course_fixture._course_location, {
             "metadata": {
                 u"user_partitions": [
-                    UserPartition(0, 'Configuration alpha,beta', 'first', [Group("0", 'alpha'), Group("1", 'beta')]).to_json(),
+                    UserPartition(
+                        0,
+                        'Configuration alpha,beta',
+                        'random',
+                        'first',
+                        [Group("0", 'alpha'), Group("1", 'beta')]
+                    ).to_json(),
                     UserPartition(1, 'Configuration 0,1,2', 'second', [Group("0", 'Group 0'), Group("1", 'Group 1'), Group("2", 'Group 2')]).to_json()
                 ],
             },
@@ -124,8 +130,13 @@ class SplitTest(ContainerBase, SplitTestMixin):
         self.course_fixture._update_xblock(self.course_fixture._course_location, {
             "metadata": {
                 u"user_partitions": [
-                    UserPartition(0, 'Configuration alpha,beta', 'first',
-                                  [Group("0", 'alpha'), Group("2", 'gamma')]).to_json()
+                    UserPartition(
+                        0,
+                        'Configuration alpha,beta',
+                        'random',
+                        'first',
+                        [Group("0", 'alpha'), Group("2", 'gamma')]
+                    ).to_json()
                 ],
             },
         })
@@ -610,8 +621,20 @@ class GroupConfigurationsTest(ContainerBase, SplitTestMixin):
         self.course_fixture._update_xblock(self.course_fixture._course_location, {
             "metadata": {
                 u"user_partitions": [
-                    UserPartition(0, 'Name of the Group Configuration', 'Description of the group configuration.', [Group("0", 'Group 0'), Group("1", 'Group 1')]).to_json(),
-                    UserPartition(1, 'Name of second Group Configuration', 'Second group configuration.', [Group("0", 'Alpha'), Group("1", 'Beta'), Group("2", 'Gamma')]).to_json(),
+                    UserPartition(
+                        0,
+                        'Name of the Group Configuration',
+                        'random',
+                        'Description of the group configuration.',
+                        [Group("0", 'Group 0'), Group("1", 'Group 1')]
+                    ).to_json(),
+                    UserPartition(
+                        1,
+                        'Name of second Group Configuration',
+                        'random',
+                        'Second group configuration.',
+                        [Group("0", 'Alpha'), Group("1", 'Beta'), Group("2", 'Gamma')]
+                    ).to_json(),
                 ],
             },
         })

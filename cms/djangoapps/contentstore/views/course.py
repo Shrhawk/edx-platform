@@ -22,7 +22,7 @@ from xmodule.error_module import ErrorDescriptor
 from xmodule.modulestore.django import modulestore
 from xmodule.contentstore.content import StaticContent
 from xmodule.tabs import PDFTextbookTabs
-from xmodule.partitions.partitions import UserPartition, Group
+from xmodule.partitions.partitions import UserPartition
 from xmodule.modulestore import EdxJSONEncoder
 from xmodule.modulestore.exceptions import ItemNotFoundError, DuplicateCourseError
 from opaque_keys import InvalidKeyError
@@ -1166,7 +1166,7 @@ class GroupConfiguration(object):
             configuration = json.loads(json_string)
         except ValueError:
             raise GroupConfigurationsValidationError(_("invalid JSON"))
-
+        configuration["version"] = UserPartition.VERSION
         return configuration
 
     def validate(self):
@@ -1217,15 +1217,7 @@ class GroupConfiguration(object):
         """
         Get user partition for saving in course.
         """
-        groups = [Group(g["id"], g["name"]) for g in self.configuration["groups"]]
-
-        return UserPartition(
-            self.configuration["id"],
-            self.configuration["name"],
-            self.configuration["type"],
-            self.configuration["description"],
-            groups
-        )
+        return UserPartition.from_json(self.configuration)
 
     @staticmethod
     def get_usage_info(course, store):
