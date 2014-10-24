@@ -61,19 +61,19 @@ class HelperMethods(object):
             category="vertical",
             display_name="Condition 0 vertical",
             location=c0_url,
-            )
+        )
         ItemFactory.create(
             parent_location=split_test.location,
             category="vertical",
             display_name="Condition 1 vertical",
             location=c1_url,
-            )
+        )
         ItemFactory.create(
             parent_location=split_test.location,
             category="vertical",
             display_name="Condition 2 vertical",
             location=c2_url,
-            )
+        )
 
         partitions_json = [p.to_json() for p in self.course.user_partitions]
 

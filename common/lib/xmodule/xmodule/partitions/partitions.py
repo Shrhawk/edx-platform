@@ -102,6 +102,7 @@ class CohortedUserPartitionScheme(UserPartitionScheme):
 
     def get_group_for_user(self, user_partition):
         """
+        Returns the group that has been configured to be shown for the user's cohort.
         """
         # TODO: implement this!
         return None
