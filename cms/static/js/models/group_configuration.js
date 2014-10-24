@@ -9,7 +9,7 @@ function(Backbone, _, str, gettext, GroupModel, GroupCollection) {
         defaults: function() {
             return {
                 name: '',
-                type: 'random',
+                scheme: 'random',
                 description: '',
                 version: '2',
                 groups: new GroupCollection([
@@ -72,7 +72,7 @@ function(Backbone, _, str, gettext, GroupModel, GroupCollection) {
             return {
                 id: this.get('id'),
                 name: this.get('name'),
-                type: this.get('type'),
+                scheme: this.get('scheme'),
                 description: this.get('description'),
                 version: this.get('version'),
                 groups: this.get('groups').toJSON()

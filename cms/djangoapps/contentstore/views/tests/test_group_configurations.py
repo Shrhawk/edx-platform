@@ -127,17 +127,17 @@ class GroupConfigurationsBaseTestCase(object):
                 u'groups': [
                     {u'name': u'Group A'},
                     {u'name': u'Group B'},
-                    ],
-                },
+                ],
+            },
             # must have at least one group
             {
                 u'name': u'Test name',
                 u'description': u'Test description',
                 u'groups': [],
-                },
+            },
             # an empty json
             {},
-            ]
+        ]
 
         for bad_json in bad_jsons:
             response = self.client.post(
@@ -146,7 +146,7 @@ class GroupConfigurationsBaseTestCase(object):
                 content_type="application/json",
                 HTTP_ACCEPT="application/json",
                 HTTP_X_REQUESTED_WITH="XMLHttpRequest",
-                )
+            )
             self.assertEqual(response.status_code, 400)
             self.assertNotIn("Location", response)
             content = json.loads(response.content)
@@ -165,7 +165,7 @@ class GroupConfigurationsBaseTestCase(object):
             content_type="application/json",
             HTTP_ACCEPT="application/json",
             HTTP_X_REQUESTED_WITH="XMLHttpRequest",
-            )
+        )
         self.assertEqual(response.status_code, 400)
         self.assertNotIn("Location", response)
         content = json.loads(response.content)
@@ -196,7 +196,7 @@ class GroupConfigurationsListHandlerTestCase(CourseTestCase, GroupConfigurations
 
         self.course.user_partitions = [
             UserPartition(0, 'First name', 'First description', [Group(0, 'Group A'), Group(1, 'Group B'), Group(2, 'Group C')]),
-            ]
+        ]
         self.save_course()
 
         if SPLIT_TEST_COMPONENT_TYPE not in self.course.advanced_modules:
@@ -226,7 +226,7 @@ class GroupConfigurationsListHandlerTestCase(CourseTestCase, GroupConfigurations
         response = self.client.get(
             self._url(),
             HTTP_ACCEPT="text/plain",
-            )
+        )
         self.assertEqual(response.status_code, 406)
 
     def test_can_create_group_configuration(self):
@@ -241,15 +241,15 @@ class GroupConfigurationsListHandlerTestCase(CourseTestCase, GroupConfigurations
             u'groups': [
                 {u'name': u'Group A', u'version': 1},
                 {u'name': u'Group B', u'version': 1},
-                ],
-            }
+            ],
+        }
         response = self.client.post(
             self._url(),
             data=json.dumps(GROUP_CONFIGURATION_JSON),
             content_type="application/json",
             HTTP_ACCEPT="application/json",
             HTTP_X_REQUESTED_WITH="XMLHttpRequest",
-            )
+        )
         self.assertEqual(response.status_code, 201)
         self.assertIn("Location", response)
         content = json.loads(response.content)
@@ -285,7 +285,7 @@ class GroupConfigurationsDetailHandlerTestCase(CourseTestCase, GroupConfiguratio
             'group_configurations_detail_handler',
             self.course.id,
             kwargs={'group_configuration_id': cid},
-            )
+        )
 
     def test_can_create_new_group_configuration_if_it_does_not_exist(self):
         """
@@ -300,9 +300,9 @@ class GroupConfigurationsDetailHandlerTestCase(CourseTestCase, GroupConfiguratio
             u'groups': [
                 {u'id': 0, u'name': u'Group A', u'version': 1},
                 {u'id': 1, u'name': u'Group B', u'version': 1},
-                ],
+            ],
             u'usage': [],
-            }
+        }
 
         response = self.client.put(
             self._url(cid=999),
@@ -310,7 +310,7 @@ class GroupConfigurationsDetailHandlerTestCase(CourseTestCase, GroupConfiguratio
             content_type="application/json",
             HTTP_ACCEPT="application/json",
             HTTP_X_REQUESTED_WITH="XMLHttpRequest",
-            )
+        )
         content = json.loads(response.content)
         self.assertEqual(content, expected)
         self.reload_course()
@@ -338,9 +338,9 @@ class GroupConfigurationsDetailHandlerTestCase(CourseTestCase, GroupConfiguratio
             u'groups': [
                 {u'id': 0, u'name': u'New Group Name', u'version': 1},
                 {u'id': 2, u'name': u'Group C', u'version': 1},
-                ],
+            ],
             u'usage': [],
-            }
+        }
 
         response = self.client.put(
             self._url(),
@@ -348,7 +348,7 @@ class GroupConfigurationsDetailHandlerTestCase(CourseTestCase, GroupConfiguratio
             content_type="application/json",
             HTTP_ACCEPT="application/json",
             HTTP_X_REQUESTED_WITH="XMLHttpRequest",
-            )
+        )
         content = json.loads(response.content)
         self.assertEqual(content, expected)
         self.reload_course()
@@ -374,7 +374,7 @@ class GroupConfigurationsDetailHandlerTestCase(CourseTestCase, GroupConfiguratio
             content_type="application/json",
             HTTP_ACCEPT="application/json",
             HTTP_X_REQUESTED_WITH="XMLHttpRequest",
-            )
+        )
         self.assertEqual(response.status_code, 204)
         self.reload_course()
         # Verify that user_partitions is properly updated in the course.
@@ -394,7 +394,7 @@ class GroupConfigurationsDetailHandlerTestCase(CourseTestCase, GroupConfiguratio
             content_type="application/json",
             HTTP_ACCEPT="application/json",
             HTTP_X_REQUESTED_WITH="XMLHttpRequest",
-            )
+        )
         self.assertEqual(response.status_code, 400)
         content = json.loads(response.content)
         self.assertTrue(content['error'])
@@ -414,7 +414,7 @@ class GroupConfigurationsDetailHandlerTestCase(CourseTestCase, GroupConfiguratio
             content_type="application/json",
             HTTP_ACCEPT="application/json",
             HTTP_X_REQUESTED_WITH="XMLHttpRequest",
-            )
+        )
         self.assertEqual(response.status_code, 404)
         # Verify that user_partitions is still the same.
         user_partititons = self.course.user_partitions
@@ -438,18 +438,18 @@ class GroupConfigurationsUsageInfoTestCase(CourseTestCase, HelperMethods):
         self._add_user_partitions()
         actual = GroupConfiguration.add_usage_info(self.course, self.store)
         expected = [{
-                        'id': 0,
-                        'name': 'Name 0',
-                        'scheme': 'random',
-                        'description': 'Description 0',
-                        'version': UserPartition.VERSION,
-                        'groups': [
-                            {'id': 0, 'name': 'Group A', 'version': 1},
-                            {'id': 1, 'name': 'Group B', 'version': 1},
-                            {'id': 2, 'name': 'Group C', 'version': 1},
-                            ],
-                        'usage': [],
-                        }]
+            'id': 0,
+            'name': 'Name 0',
+            'scheme': 'random',
+            'description': 'Description 0',
+            'version': UserPartition.VERSION,
+            'groups': [
+                {'id': 0, 'name': 'Group A', 'version': 1},
+                {'id': 1, 'name': 'Group B', 'version': 1},
+                {'id': 2, 'name': 'Group C', 'version': 1},
+            ],
+            'usage': [],
+        }]
         self.assertEqual(actual, expected)
 
     def test_can_get_correct_usage_info(self):
@@ -463,34 +463,34 @@ class GroupConfigurationsUsageInfoTestCase(CourseTestCase, HelperMethods):
         actual = GroupConfiguration.add_usage_info(self.course, self.store)
 
         expected = [{
-                        'id': 0,
-                        'name': 'Name 0',
-                        'scheme': 'random',
-                        'description': 'Description 0',
-                        'version': UserPartition.VERSION,
-                        'groups': [
-                            {'id': 0, 'name': 'Group A', 'version': 1},
-                            {'id': 1, 'name': 'Group B', 'version': 1},
-                            {'id': 2, 'name': 'Group C', 'version': 1},
-                            ],
-                        'usage': [{
-                                      'url': '/container/{}'.format(vertical.location),
-                                      'label': 'Test Unit 0 / Test Content Experiment 0',
-                                      'validation': None,
-                                      }],
-                        }, {
-                        'id': 1,
-                        'name': 'Name 1',
-                        'scheme': 'random',
-                        'description': 'Description 1',
-                        'version': UserPartition.VERSION,
-                        'groups': [
-                            {'id': 0, 'name': 'Group A', 'version': 1},
-                            {'id': 1, 'name': 'Group B', 'version': 1},
-                            {'id': 2, 'name': 'Group C', 'version': 1},
-                            ],
-                        'usage': [],
-                        }]
+            'id': 0,
+            'name': 'Name 0',
+            'scheme': 'random',
+            'description': 'Description 0',
+            'version': UserPartition.VERSION,
+            'groups': [
+                {'id': 0, 'name': 'Group A', 'version': 1},
+                {'id': 1, 'name': 'Group B', 'version': 1},
+                {'id': 2, 'name': 'Group C', 'version': 1},
+            ],
+            'usage': [{
+                'url': '/container/{}'.format(vertical.location),
+                'label': 'Test Unit 0 / Test Content Experiment 0',
+                'validation': None,
+            }],
+        }, {
+            'id': 1,
+            'name': 'Name 1',
+            'scheme': 'random',
+            'description': 'Description 1',
+            'version': UserPartition.VERSION,
+            'groups': [
+                {'id': 0, 'name': 'Group A', 'version': 1},
+                {'id': 1, 'name': 'Group B', 'version': 1},
+                {'id': 2, 'name': 'Group C', 'version': 1},
+            ],
+            'usage': [],
+        }]
 
         self.assertEqual(actual, expected)
 
@@ -506,26 +506,26 @@ class GroupConfigurationsUsageInfoTestCase(CourseTestCase, HelperMethods):
         actual = GroupConfiguration.add_usage_info(self.course, self.store)
 
         expected = [{
-                        'id': 0,
-                        'name': 'Name 0',
-                        'scheme': 'random',
-                        'description': 'Description 0',
-                        'version': UserPartition.VERSION,
-                        'groups': [
-                            {'id': 0, 'name': 'Group A', 'version': 1},
-                            {'id': 1, 'name': 'Group B', 'version': 1},
-                            {'id': 2, 'name': 'Group C', 'version': 1},
-                            ],
-                        'usage': [{
-                                      'url': '/container/{}'.format(vertical.location),
-                                      'label': 'Test Unit 0 / Test Content Experiment 0',
-                                      'validation': None,
-                                      }, {
-                                      'url': '/container/{}'.format(vertical1.location),
-                                      'label': 'Test Unit 1 / Test Content Experiment 1',
-                                      'validation': None,
-                                      }],
-                        }]
+            'id': 0,
+            'name': 'Name 0',
+            'scheme': 'random',
+            'description': 'Description 0',
+            'version': UserPartition.VERSION,
+            'groups': [
+                {'id': 0, 'name': 'Group A', 'version': 1},
+                {'id': 1, 'name': 'Group B', 'version': 1},
+                {'id': 2, 'name': 'Group C', 'version': 1},
+            ],
+            'usage': [{
+                'url': '/container/{}'.format(vertical.location),
+                'label': 'Test Unit 0 / Test Content Experiment 0',
+                'validation': None,
+            }, {
+                'url': '/container/{}'.format(vertical1.location),
+                'label': 'Test Unit 1 / Test Content Experiment 1',
+                'validation': None,
+            }],
+        }]
         self.assertEqual(actual, expected)
 
     def test_can_handle_without_parent(self):
@@ -538,7 +538,7 @@ class GroupConfigurationsUsageInfoTestCase(CourseTestCase, HelperMethods):
             orphan = modulestore().create_item(
                 ModuleStoreEnum.UserID.test,
                 self.course.id, 'split_test',
-                )
+            )
             orphan.user_partition_id = 0
             orphan.display_name = 'Test Content Experiment'
             modulestore().update_item(orphan, ModuleStoreEnum.UserID.test)

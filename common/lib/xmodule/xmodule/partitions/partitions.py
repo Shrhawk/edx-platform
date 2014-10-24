@@ -88,8 +88,6 @@ class RandomUserPartitionScheme(UserPartitionScheme):
         # TODO: had a discussion in arch council about making randomization more
         # deterministic (e.g. some hash).  Could do that, but need to be careful not
         # to introduce correlation between users or bias in generation.
-
-        # See note above for explanation of local_random()
         return self.random.choice(user_partition.groups)
 
 
@@ -105,12 +103,8 @@ class CohortedUserPartitionScheme(UserPartitionScheme):
     def get_group_for_user(self, user_partition):
         """
         """
-        # TODO: had a discussion in arch council about making randomization more
-        # deterministic (e.g. some hash).  Could do that, but need to be careful not
-        # to introduce correlation between users or bias in generation.
-
-        # See note above for explanation of local_random()
-        return self.random.choice(user_partition.groups)
+        # TODO: implement this!
+        return None
 
 
 USER_PARTITION_SCHEMES = {
