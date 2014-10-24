@@ -8,6 +8,7 @@ from courseware.access import has_access
 from edxval.api import (
     get_video_info_for_course_and_profile, ValInternalError
 )
+from xmodule.video_module import get_transcript_language
 
 
 class BlockOutline(object):
@@ -40,7 +41,7 @@ class BlockOutline(object):
                 block = child_to_parent[block]
                 if block is not self.start_block:
                     block_path.append({
-                        'name': block.display_name,
+                        'name': block.display_name_with_default,
                         'category': block.category,
                     })
             return reversed(block_path)
@@ -76,7 +77,7 @@ class BlockOutline(object):
                 kwargs=kwargs,
                 request=self.request,
             )
-            return unit_url, section_url
+            return unit_url, section_url, block_path
 
         user = self.request.user
 
@@ -89,14 +90,16 @@ class BlockOutline(object):
 
                 summary_fn = self.categories_to_outliner[curr_block.category]
                 block_path = list(path(curr_block))
-                unit_url, section_url = find_urls(curr_block)
-                yield {
-                    "path": block_path,
-                    "named_path": [b["name"] for b in block_path[:-1]],
-                    "unit_url": unit_url,
-                    "section_url": section_url,
-                    "summary": summary_fn(self.course_id, curr_block, self.request, self.local_cache)
-                }
+                unit_url, section_url, parents = find_urls(curr_block)
+
+                if not any(parent.hide_from_toc for parent in parents):
+                    yield {
+                        "path": block_path,
+                        "named_path": [b["name"] for b in block_path[:-1]],
+                        "unit_url": unit_url,
+                        "section_url": section_url,
+                        "summary": summary_fn(self.course_id, curr_block, self.request, self.local_cache)
+                    }
 
             if curr_block.has_children:
                 for block in reversed(curr_block.get_children()):
@@ -145,7 +148,7 @@ def video_summary(course, course_id, video_descriptor, request, local_cache):
         "size": size,
         "name": video_descriptor.display_name,
         "transcripts": transcripts,
-        "language": video_descriptor.transcript_language,
+        "language": get_transcript_language(video_descriptor),
         "category": video_descriptor.category,
         "id": unicode(video_descriptor.scope_ids.usage_id),
     }
