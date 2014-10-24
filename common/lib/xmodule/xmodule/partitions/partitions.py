@@ -113,6 +113,7 @@ USER_PARTITION_SCHEMES = {
     CohortedUserPartitionScheme.scheme_id: CohortedUserPartitionScheme(),
 }
 
+
 class UserPartition(namedtuple("UserPartition", "id name description groups scheme")):
     """
     A named way to partition users into groups, primarily intended for running
@@ -165,7 +166,6 @@ class UserPartition(namedtuple("UserPartition", "id name description groups sche
         for key in ('id', 'name', 'description', 'version', 'groups'):
             if key not in value:
                 raise TypeError("UserPartition dict {0} missing value key '{1}'".format(value, key))
-
 
         if value["version"] == 1:
             # If no scheme was provided, set it to the default ('random')
