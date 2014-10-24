@@ -119,7 +119,7 @@ def export_to_xml(modulestore, contentstore, course_key, root_dir, course_dir):
                     revision=ModuleStoreEnum.RevisionOption.draft_only
                 )
 
-                if len(draft_modules) > 0:
+                if draft_modules:
                     draft_course_dir = export_fs.makeopendir(DRAFT_DIR)
 
                     # accumulate tuples of draft_modules and their parents in

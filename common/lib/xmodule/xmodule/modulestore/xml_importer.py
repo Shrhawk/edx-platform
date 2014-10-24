@@ -503,14 +503,14 @@ def _import_course_draft(
         # to ensure that pure XBlock field data is updated correctly.
         _update_module_location(module, module_location.replace(revision=MongoRevisionKey.draft))
 
+        parent_url = get_parent_url(module)
+        index = index_in_children_list(module)
+
         # make sure our parent has us in its list of children
         # this is to make sure private only modules show up
         # in the list of children since they would have been
         # filtered out from the non-draft store export.
-        if module_has_parent_pointer_and_index_attr(module):
-            parent_url = get_parent_url(module)
-            index = index_in_children_list(module)
-
+        if parent_url is not None and index is not None:
             course_key = descriptor.location.course_key
             parent_location = course_key.make_usage_key_from_deprecated_string(parent_url)
 
@@ -666,8 +666,6 @@ def get_parent_url(module, xml=None):
     if xml is not None:
         create_xml_attributes(module, xml)
         return get_parent_url(module)  # don't reparse xml b/c don't infinite recurse but retry above lines
-    else:
-        return None
 
 
 def index_in_children_list(module, xml=None):
@@ -679,12 +677,11 @@ def index_in_children_list(module, xml=None):
     """
     if hasattr(module, 'xml_attributes'):
         val = module.xml_attributes.get('index_in_children_list')
-        return int(val)
-    if xml is not None:
+        if val is not None:
+            return int(val)
+    elif xml is not None:
         create_xml_attributes(module, xml)
         return index_in_children_list(module)  # don't reparse xml b/c don't infinite recurse but retry above lines
-    else:
-        return None
 
 
 def create_xml_attributes(module, xml):
@@ -701,22 +698,6 @@ def create_xml_attributes(module, xml):
 
     # now cache it on module where it's expected
     setattr(module, 'xml_attributes', xml_attrs)
-
-
-def module_has_parent_pointer_and_index_attr(module):
-    """
-    Checks if a module has a parent pointer and an index_in_children_list attr.
-    This is only the case for a draft module.
-    """
-    if hasattr(module, 'xml_attributes'):
-        has_parent_pointer = 'parent_url' in module.xml_attributes or 'parent_sequential_url' in module.xml_attributes
-
-        has_index_attr = False
-        index_in_children_list = module.xml_attributes.get('index_in_children_list')
-        if index_in_children_list is not None:
-            has_index_attr = index_in_children_list.isdigit()
-        return has_parent_pointer and has_index_attr
-    return False
 
 
 def validate_no_non_editable_metadata(module_store, course_id, category):
