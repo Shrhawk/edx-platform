@@ -552,13 +552,13 @@ class TestGradeReportConditionalContent(TestReportMixin, TestIntegrationTask):
         UserCourseTagFactory(
             user=self.student_a,
             course_id=self.course.id,
-            key='xblock.partition_service.partition_{0}'.format(self.partition.id),
+            key='xblock.partition_service.partition_{0}'.format(self.partition.id),  # pylint: disable=no-member
             value=str(self.user_partition_group_a)
         )
         UserCourseTagFactory(
             user=self.student_b,
             course_id=self.course.id,
-            key='xblock.partition_service.partition_{0}'.format(self.partition.id),
+            key='xblock.partition_service.partition_{0}'.format(self.partition.id),  # pylint: disable=no-member
             value=str(self.user_partition_group_b)
         )
 
@@ -576,7 +576,7 @@ class TestGradeReportConditionalContent(TestReportMixin, TestIntegrationTask):
             parent_location=problem_vertical.location,
             category='split_test',
             display_name='Split Test',
-            user_partition_id=self.partition.id,
+            user_partition_id=self.partition.id,  # pylint: disable=no-member
             group_id_to_child={str(index): url for index, url in enumerate([vertical_a_url, vertical_b_url])}
         )
         self.vertical_a = ItemFactory.create(

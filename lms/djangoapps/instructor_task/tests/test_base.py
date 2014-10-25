@@ -108,7 +108,7 @@ class InstructorTaskCourseTestCase(LoginEnrollmentTestCase, ModuleStoreTestCase)
     course = None
     current_user = None
 
-    def initialize_course(self, course_factory_kwargs={}):
+    def initialize_course(self, course_factory_kwargs=None):
         """
         Create a course in the store, with a chapter and section.
 
@@ -124,7 +124,8 @@ class InstructorTaskCourseTestCase(LoginEnrollmentTestCase, ModuleStoreTestCase)
             "number": TEST_COURSE_NUMBER,
             "display_name": TEST_COURSE_NAME
         }
-        course_args.update(course_factory_kwargs)
+        if course_factory_kwargs is not None:
+            course_args.update(course_factory_kwargs)
         self.course = CourseFactory.create(**course_args)
 
         # Add a chapter to the course
