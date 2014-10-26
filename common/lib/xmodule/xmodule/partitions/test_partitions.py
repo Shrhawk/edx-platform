@@ -266,7 +266,7 @@ class TestPartitionsService(TestCase):
         group1 = self.partitions_service.get_user_group_id_for_partition(self.partition_id)
 
         # make sure we get the same group back out every time
-        for count in range(0, 10):
+        for __ in range(0, 10):
             group2 = self.partitions_service.get_user_group_id_for_partition(self.partition_id)
             self.assertEqual(group1, group2)
 

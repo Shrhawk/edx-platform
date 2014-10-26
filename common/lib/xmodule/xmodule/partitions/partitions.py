@@ -68,9 +68,6 @@ class UserPartitionScheme(object):
 
     is_dynamic = False
 
-    def get_group_for_user(self, user_partition):
-        return None
-
 
 class RandomUserPartitionScheme(UserPartitionScheme):
     """
